@@ -5,6 +5,7 @@ import { formatCurrency, formatDate } from '../utils/calculations'
 import Filters from './Filters'
 import EmptyState from './EmptyState'
 import AddTransactionModal from './AddTransactionModal'
+import ConfirmDialog from './ConfirmDialog'
 
 /**
  * Transactions table with search, filter, sort, and role-based actions.
@@ -26,6 +27,7 @@ export default function TransactionTable() {
 
   const [modalOpen, setModalOpen] = useState(false)
   const [editingTransaction, setEditingTransaction] = useState(null)
+  const [deleteTarget, setDeleteTarget] = useState(null)
 
   const isAdmin = role === 'admin'
 
@@ -192,7 +194,7 @@ export default function TransactionTable() {
                           <Pencil size={14} />
                         </button>
                         <button
-                          onClick={() => deleteTransaction(txn.id)}
+                          onClick={() => setDeleteTarget(txn)}
                           className="p-1.5 rounded-lg hover:bg-expense-50 dark:hover:bg-expense-700/20
                                      text-surface-400 hover:text-expense-600 dark:hover:text-expense-400
                                      transition-colors duration-200"
@@ -225,6 +227,15 @@ export default function TransactionTable() {
         isOpen={modalOpen}
         onClose={handleCloseModal}
         editTransaction={editingTransaction}
+      />
+
+      {/* Delete Confirmation */}
+      <ConfirmDialog
+        isOpen={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={() => deleteTransaction(deleteTarget?.id)}
+        title="Delete Transaction"
+        message={`Are you sure you want to delete "${deleteTarget?.description}"? This action cannot be undone.`}
       />
     </div>
   )

@@ -40,17 +40,17 @@ export default function SummaryCard({ label, value, icon: Icon, variant = 'brand
       className="card p-5 sm:p-6 group hover:-translate-y-0.5 
                  transition-all duration-300 cursor-default animate-fade-in"
     >
-      <div className="flex items-start justify-between">
+      <div className="flex items-start justify-between gap-3">
         {/* Label & Value */}
-        <div className="space-y-2">
+        <div className="min-w-0 flex-1 space-y-2">
           <p className="text-sm font-medium text-surface-500 dark:text-surface-400">
             {label}
           </p>
-          <p className={`text-2xl sm:text-3xl font-bold tracking-tight ${colors.value}`}>
+          <p className={`text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight truncate ${colors.value}`}>
             {formatCurrency(value)}
           </p>
           {subtitle && (
-            <p className="text-xs text-surface-400 dark:text-surface-500 mt-1">
+            <p className="text-xs text-surface-400 dark:text-surface-500 mt-1 truncate">
               {subtitle}
             </p>
           )}
@@ -58,10 +58,10 @@ export default function SummaryCard({ label, value, icon: Icon, variant = 'brand
 
         {/* Icon */}
         <div
-          className={`p-3 rounded-xl ${colors.bg} ring-1 ${colors.ring}
+          className={`p-2.5 sm:p-3 rounded-xl shrink-0 ${colors.bg} ring-1 ${colors.ring}
                       group-hover:scale-110 transition-transform duration-300`}
         >
-          <Icon size={22} className={colors.icon} />
+          <Icon size={20} className={colors.icon} />
         </div>
       </div>
     </div>
