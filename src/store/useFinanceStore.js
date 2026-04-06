@@ -17,9 +17,11 @@ const useFinanceStore = create(
 
       // ─── Filters & Search ────────────────────────────────
       searchQuery: '',
-      filterType: 'all', // 'all' | 'income' | 'expense'
-      sortBy: 'date',    // 'date' | 'amount'
-      sortOrder: 'desc', // 'asc' | 'desc'
+      filterType: 'all',       // 'all' | 'income' | 'expense'
+      filterCategory: 'all',   // 'all' | category name
+      dateRange: { from: '', to: '' }, // date range filter
+      sortBy: 'date',          // 'date' | 'amount'
+      sortOrder: 'desc',       // 'asc' | 'desc'
 
       // ─── UI State ───────────────────────────────────────
       role: 'admin',   // 'viewer' | 'admin'
@@ -52,6 +54,8 @@ const useFinanceStore = create(
       // ─── Filter & Search Actions ─────────────────────────
       setSearchQuery: (query) => set({ searchQuery: query }),
       setFilterType: (type) => set({ filterType: type }),
+      setFilterCategory: (category) => set({ filterCategory: category }),
+      setDateRange: (range) => set({ dateRange: range }),
 
       setSortBy: (field) =>
         set((state) => ({
@@ -111,7 +115,7 @@ const useFinanceStore = create(
  * Compute filtered, searched, and sorted transactions.
  * Call from components with useMemo, NOT as a Zustand selector.
  */
-export function getFilteredTransactions(transactions, searchQuery, filterType, sortBy, sortOrder) {
+export function getFilteredTransactions(transactions, searchQuery, filterType, sortBy, sortOrder, filterCategory = 'all', dateRange = { from: '', to: '' }) {
   let results = [...transactions]
 
   // Filter by type
@@ -127,6 +131,19 @@ export function getFilteredTransactions(transactions, searchQuery, filterType, s
         t.description.toLowerCase().includes(query) ||
         t.category.toLowerCase().includes(query)
     )
+  }
+
+  // Filter by category
+  if (filterCategory !== 'all') {
+    results = results.filter((t) => t.category === filterCategory)
+  }
+
+  // Filter by date range
+  if (dateRange.from) {
+    results = results.filter((t) => t.date >= dateRange.from)
+  }
+  if (dateRange.to) {
+    results = results.filter((t) => t.date <= dateRange.to)
   }
 
   // Sort

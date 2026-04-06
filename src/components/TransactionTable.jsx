@@ -16,6 +16,8 @@ export default function TransactionTable() {
   const transactions = useFinanceStore((s) => s.transactions)
   const searchQuery = useFinanceStore((s) => s.searchQuery)
   const filterType = useFinanceStore((s) => s.filterType)
+  const filterCategory = useFinanceStore((s) => s.filterCategory)
+  const dateRange = useFinanceStore((s) => s.dateRange)
   const sortBy = useFinanceStore((s) => s.sortBy)
   const sortOrder = useFinanceStore((s) => s.sortOrder)
   const setSortBy = useFinanceStore((s) => s.setSortBy)
@@ -25,8 +27,8 @@ export default function TransactionTable() {
   const addToast = useToastStore((s) => s.addToast)
 
   const filteredTransactions = useMemo(
-    () => getFilteredTransactions(transactions, searchQuery, filterType, sortBy, sortOrder),
-    [transactions, searchQuery, filterType, sortBy, sortOrder]
+    () => getFilteredTransactions(transactions, searchQuery, filterType, sortBy, sortOrder, filterCategory, dateRange),
+    [transactions, searchQuery, filterType, sortBy, sortOrder, filterCategory, dateRange]
   )
 
   const [modalOpen, setModalOpen] = useState(false)

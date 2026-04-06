@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { Wallet, TrendingUp, TrendingDown, Activity } from 'lucide-react'
+import { useState, useEffect, useCallback } from 'react'
+import { Wallet, TrendingUp, TrendingDown, Activity, Keyboard } from 'lucide-react'
 import useFinanceStore from '../store/useFinanceStore'
 import { getTotalIncome, getTotalExpenses, getBalance } from '../utils/calculations'
 import DarkModeToggle from '../components/DarkModeToggle'
@@ -10,8 +10,10 @@ import ExpensePieChart from '../components/charts/ExpensePieChart'
 import MonthlyComparisonChart from '../components/charts/MonthlyComparisonChart'
 import Insights from '../components/Insights'
 import TransactionTable from '../components/TransactionTable'
+import BudgetTracker from '../components/BudgetTracker'
 import DashboardSkeleton from '../components/Skeleton'
 import ToastContainer from '../components/Toast'
+import useKeyboardShortcuts from '../hooks/useKeyboardShortcuts'
 
 /**
  * Main dashboard page — assembles all sections.
@@ -19,6 +21,20 @@ import ToastContainer from '../components/Toast'
 export default function Dashboard() {
   const transactions = useFinanceStore((s) => s.transactions)
   const [isLoading, setIsLoading] = useState(true)
+  const [showShortcuts, setShowShortcuts] = useState(false)
+
+  // Callback for keyboard shortcut to open add modal
+  // TransactionTable manages its own modal, so we scroll to it and click the button
+  const handleAddViaShortcut = useCallback(() => {
+    const btn = document.getElementById('add-transaction-btn')
+    if (btn) {
+      btn.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      setTimeout(() => btn.click(), 300)
+    }
+  }, [])
+
+  // Register keyboard shortcuts
+  useKeyboardShortcuts({ onAddTransaction: handleAddViaShortcut })
 
   // Simulate initial loading state for hydration
   useEffect(() => {
@@ -52,13 +68,61 @@ export default function Dashboard() {
             </div>
 
             {/* Right side controls */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
+              {/* Keyboard shortcuts hint */}
+              <button
+                onClick={() => setShowShortcuts(!showShortcuts)}
+                className="p-2 rounded-xl text-surface-400 hover:text-surface-600 dark:hover:text-surface-300
+                           hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors duration-200
+                           hidden sm:flex items-center"
+                title="Keyboard shortcuts"
+              >
+                <Keyboard size={18} />
+              </button>
               <RoleToggle />
               <DarkModeToggle />
             </div>
           </div>
         </div>
       </header>
+
+      {/* ─── Keyboard Shortcuts Panel ───────────────────── */}
+      {showShortcuts && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 animate-fade-in">
+          <div className="card p-4 sm:p-5">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-semibold text-surface-700 dark:text-surface-300">
+                ⌨️ Keyboard Shortcuts
+              </h3>
+              <button
+                onClick={() => setShowShortcuts(false)}
+                className="text-xs text-surface-400 hover:text-surface-600 dark:hover:text-surface-300"
+              >
+                Hide
+              </button>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3">
+              {[
+                { key: 'N', desc: 'Add Transaction' },
+                { key: 'D', desc: 'Toggle Dark Mode' },
+                { key: '/', desc: 'Focus Search' },
+                { key: '1', desc: 'All Transactions' },
+                { key: '2', desc: 'Income Only' },
+                { key: '3', desc: 'Expenses Only' },
+              ].map(({ key, desc }) => (
+                <div key={key} className="flex items-center gap-2">
+                  <kbd className="px-2 py-1 text-xs font-mono font-semibold bg-surface-100 dark:bg-surface-800 
+                                  text-surface-600 dark:text-surface-300 rounded-md border border-surface-200 
+                                  dark:border-surface-700 min-w-[28px] text-center">
+                    {key}
+                  </kbd>
+                  <span className="text-xs text-surface-500 dark:text-surface-400">{desc}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ─── Loading Skeleton ───────────────────────────── */}
       {isLoading ? (
@@ -102,9 +166,14 @@ export default function Dashboard() {
               </div>
             </section>
 
-            {/* Charts Row 2: Monthly Comparison (full width) */}
-            <section id="monthly-chart">
-              <MonthlyComparisonChart />
+            {/* Charts Row 2: Monthly Comparison + Budget Tracker */}
+            <section id="monthly-budget" className="grid grid-cols-1 lg:grid-cols-5 gap-4 sm:gap-6">
+              <div className="lg:col-span-3">
+                <MonthlyComparisonChart />
+              </div>
+              <div className="lg:col-span-2">
+                <BudgetTracker />
+              </div>
             </section>
 
             {/* Insights */}
