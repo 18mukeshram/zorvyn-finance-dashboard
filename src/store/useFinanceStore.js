@@ -31,7 +31,7 @@ const useFinanceStore = create(
           transactions: [
             {
               ...transaction,
-              id: crypto.randomUUID(),
+              id: transaction.id || crypto.randomUUID(),
             },
             ...state.transactions,
           ],
