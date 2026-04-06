@@ -78,11 +78,11 @@ export default function AddTransactionModal({ isOpen, onClose, editTransaction =
 
     if (isEditing) {
       editTransactionAction(editTransaction.id, transactionData)
+      onClose('edited')
     } else {
       addTransaction(transactionData)
+      onClose('added')
     }
-
-    onClose()
   }
 
   const updateField = (field, value) => {

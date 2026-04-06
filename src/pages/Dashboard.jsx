@@ -7,9 +7,11 @@ import RoleToggle from '../components/RoleToggle'
 import SummaryCard from '../components/SummaryCard'
 import BalanceLineChart from '../components/charts/BalanceLineChart'
 import ExpensePieChart from '../components/charts/ExpensePieChart'
+import MonthlyComparisonChart from '../components/charts/MonthlyComparisonChart'
 import Insights from '../components/Insights'
 import TransactionTable from '../components/TransactionTable'
 import DashboardSkeleton from '../components/Skeleton'
+import ToastContainer from '../components/Toast'
 
 /**
  * Main dashboard page — assembles all sections.
@@ -90,7 +92,7 @@ export default function Dashboard() {
               />
             </section>
 
-            {/* Charts */}
+            {/* Charts Row 1: Balance + Pie */}
             <section id="charts" className="grid grid-cols-1 lg:grid-cols-5 gap-4 sm:gap-6">
               <div className="lg:col-span-3">
                 <BalanceLineChart />
@@ -98,6 +100,11 @@ export default function Dashboard() {
               <div className="lg:col-span-2">
                 <ExpensePieChart />
               </div>
+            </section>
+
+            {/* Charts Row 2: Monthly Comparison (full width) */}
+            <section id="monthly-chart">
+              <MonthlyComparisonChart />
             </section>
 
             {/* Insights */}
@@ -121,6 +128,9 @@ export default function Dashboard() {
           </footer>
         </>
       )}
+
+      {/* ─── Toast Notifications ────────────────────────── */}
+      <ToastContainer />
     </div>
   )
 }

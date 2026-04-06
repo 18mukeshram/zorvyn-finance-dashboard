@@ -1,8 +1,8 @@
 import { formatCurrency } from '../utils/calculations'
+import { useCountUp } from '../hooks/useCountUp'
 
 /**
- * Reusable summary metric card.
- * Displays a financial metric with icon, label, value, and color accent.
+ * Reusable summary metric card with animated number counter.
  *
  * @param {Object} props
  * @param {string} props.label - Card title (e.g., "Total Balance")
@@ -12,6 +12,8 @@ import { formatCurrency } from '../utils/calculations'
  * @param {string} [props.subtitle] - Optional subtitle text
  */
 export default function SummaryCard({ label, value, icon: Icon, variant = 'brand', subtitle }) {
+  const animatedValue = useCountUp(value, 1200, 2)
+
   const colorMap = {
     brand: {
       bg: 'bg-brand-50 dark:bg-brand-900/20',
@@ -47,7 +49,7 @@ export default function SummaryCard({ label, value, icon: Icon, variant = 'brand
             {label}
           </p>
           <p className={`text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold tracking-tight ${colors.value}`}>
-            {formatCurrency(value)}
+            {formatCurrency(animatedValue)}
           </p>
           {subtitle && (
             <p className="text-xs text-surface-400 dark:text-surface-500 mt-1">
