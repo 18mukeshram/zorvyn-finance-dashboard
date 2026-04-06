@@ -1,7 +1,9 @@
 import { useState, useMemo } from 'react'
 import { ArrowUpDown, ArrowUp, ArrowDown, Pencil, Trash2, Plus } from 'lucide-react'
 import useFinanceStore, { getFilteredTransactions } from '../store/useFinanceStore'
+import useToastStore from '../store/useToastStore'
 import { formatCurrency, formatDate } from '../utils/calculations'
+import { CategoryBadge, CategoryDot } from '../utils/categoryColors'
 import Filters from './Filters'
 import EmptyState from './EmptyState'
 import AddTransactionModal from './AddTransactionModal'
@@ -19,6 +21,8 @@ export default function TransactionTable() {
   const setSortBy = useFinanceStore((s) => s.setSortBy)
   const role = useFinanceStore((s) => s.role)
   const deleteTransaction = useFinanceStore((s) => s.deleteTransaction)
+  const addTransaction = useFinanceStore((s) => s.addTransaction)
+  const addToast = useToastStore((s) => s.addToast)
 
   const filteredTransactions = useMemo(
     () => getFilteredTransactions(transactions, searchQuery, filterType, sortBy, sortOrder),
@@ -41,9 +45,35 @@ export default function TransactionTable() {
     setModalOpen(true)
   }
 
-  const handleCloseModal = () => {
+  const handleCloseModal = (action) => {
+    if (action === 'added') {
+      addToast('success', 'Transaction added successfully')
+    } else if (action === 'edited') {
+      addToast('success', 'Transaction updated successfully')
+    }
     setModalOpen(false)
     setEditingTransaction(null)
+  }
+
+  const handleDelete = () => {
+    if (!deleteTarget) return
+
+    // Store the deleted transaction for undo
+    const deletedTxn = { ...deleteTarget }
+    deleteTransaction(deleteTarget.id)
+    setDeleteTarget(null)
+
+    // Show undo toast
+    addToast('undo', `Deleted "${deletedTxn.description}"`, {
+      onUndo: () => {
+        // Restore the transaction
+        addTransaction({
+          ...deletedTxn,
+          id: deletedTxn.id, // Keep the same ID
+        })
+        addToast('success', 'Transaction restored')
+      },
+    })
   }
 
   /**
@@ -153,13 +183,14 @@ export default function TransactionTable() {
                     <div className="text-sm font-medium text-surface-800 dark:text-surface-200">
                       {txn.description}
                     </div>
-                    {/* Show category on mobile under description */}
-                    <div className="text-xs text-surface-400 dark:text-surface-500 sm:hidden mt-0.5">
+                    {/* Show category with dot on mobile */}
+                    <div className="flex items-center gap-1.5 text-xs text-surface-400 dark:text-surface-500 sm:hidden mt-0.5">
+                      <CategoryDot category={txn.category} />
                       {txn.category}
                     </div>
                   </td>
                   <td className="px-5 sm:px-6 py-3.5 text-sm text-surface-600 dark:text-surface-400 hidden sm:table-cell">
-                    {txn.category}
+                    <CategoryBadge category={txn.category} />
                   </td>
                   <td className="px-5 sm:px-6 py-3.5 hidden md:table-cell">
                     <span
@@ -222,7 +253,7 @@ export default function TransactionTable() {
         </div>
       )}
 
-      {/* Modal */}
+      {/* Add/Edit Modal */}
       <AddTransactionModal
         isOpen={modalOpen}
         onClose={handleCloseModal}
@@ -233,7 +264,7 @@ export default function TransactionTable() {
       <ConfirmDialog
         isOpen={!!deleteTarget}
         onClose={() => setDeleteTarget(null)}
-        onConfirm={() => deleteTransaction(deleteTarget?.id)}
+        onConfirm={handleDelete}
         title="Delete Transaction"
         message={`Are you sure you want to delete "${deleteTarget?.description}"? This action cannot be undone.`}
       />
