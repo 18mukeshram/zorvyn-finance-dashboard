@@ -1,7 +1,7 @@
+import { useMemo } from 'react'
 import { Search, Download, X } from 'lucide-react'
-import useFinanceStore from '../store/useFinanceStore'
+import useFinanceStore, { getFilteredTransactions } from '../store/useFinanceStore'
 import { exportToCSV } from '../utils/csv'
-import { selectFilteredTransactions } from '../store/useFinanceStore'
 
 /**
  * Filters bar — search input, type filter pills, and CSV export.
@@ -11,7 +11,14 @@ export default function Filters() {
   const setSearchQuery = useFinanceStore((s) => s.setSearchQuery)
   const filterType = useFinanceStore((s) => s.filterType)
   const setFilterType = useFinanceStore((s) => s.setFilterType)
-  const filteredTransactions = useFinanceStore(selectFilteredTransactions)
+  const transactions = useFinanceStore((s) => s.transactions)
+  const sortBy = useFinanceStore((s) => s.sortBy)
+  const sortOrder = useFinanceStore((s) => s.sortOrder)
+
+  const filteredTransactions = useMemo(
+    () => getFilteredTransactions(transactions, searchQuery, filterType, sortBy, sortOrder),
+    [transactions, searchQuery, filterType, sortBy, sortOrder]
+  )
 
   const filterOptions = [
     { value: 'all', label: 'All' },

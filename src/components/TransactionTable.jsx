@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { ArrowUpDown, ArrowUp, ArrowDown, Pencil, Trash2, Plus } from 'lucide-react'
-import useFinanceStore, { selectFilteredTransactions } from '../store/useFinanceStore'
+import useFinanceStore, { getFilteredTransactions } from '../store/useFinanceStore'
 import { formatCurrency, formatDate } from '../utils/calculations'
 import Filters from './Filters'
 import EmptyState from './EmptyState'
@@ -10,12 +10,19 @@ import AddTransactionModal from './AddTransactionModal'
  * Transactions table with search, filter, sort, and role-based actions.
  */
 export default function TransactionTable() {
-  const filteredTransactions = useFinanceStore(selectFilteredTransactions)
+  const transactions = useFinanceStore((s) => s.transactions)
+  const searchQuery = useFinanceStore((s) => s.searchQuery)
+  const filterType = useFinanceStore((s) => s.filterType)
   const sortBy = useFinanceStore((s) => s.sortBy)
   const sortOrder = useFinanceStore((s) => s.sortOrder)
   const setSortBy = useFinanceStore((s) => s.setSortBy)
   const role = useFinanceStore((s) => s.role)
   const deleteTransaction = useFinanceStore((s) => s.deleteTransaction)
+
+  const filteredTransactions = useMemo(
+    () => getFilteredTransactions(transactions, searchQuery, filterType, sortBy, sortOrder),
+    [transactions, searchQuery, filterType, sortBy, sortOrder]
+  )
 
   const [modalOpen, setModalOpen] = useState(false)
   const [editingTransaction, setEditingTransaction] = useState(null)
