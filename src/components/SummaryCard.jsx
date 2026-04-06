@@ -46,11 +46,11 @@ export default function SummaryCard({ label, value, icon: Icon, variant = 'brand
           <p className="text-sm font-medium text-surface-500 dark:text-surface-400">
             {label}
           </p>
-          <p className={`text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight truncate ${colors.value}`}>
+          <p className={`text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold tracking-tight ${colors.value}`}>
             {formatCurrency(value)}
           </p>
           {subtitle && (
-            <p className="text-xs text-surface-400 dark:text-surface-500 mt-1 truncate">
+            <p className="text-xs text-surface-400 dark:text-surface-500 mt-1">
               {subtitle}
             </p>
           )}

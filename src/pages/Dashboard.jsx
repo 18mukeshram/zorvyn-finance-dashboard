@@ -66,7 +66,7 @@ export default function Dashboard() {
           {/* ─── Main Content ───────────────────────────────── */}
           <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 sm:space-y-8">
             {/* Summary Cards */}
-            <section id="summary-cards" className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+            <section id="summary-cards" className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
               <SummaryCard
                 label="Total Balance"
                 value={balance}
