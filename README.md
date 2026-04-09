@@ -6,6 +6,15 @@ A modern, responsive finance dashboard built as a frontend developer assessment.
 ![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-3-06B6D4?logo=tailwindcss&logoColor=white)
 ![Zustand](https://img.shields.io/badge/Zustand-5-000?logo=npm)
+![Tests](https://img.shields.io/badge/Tests-Vitest-6E9F18?logo=vitest&logoColor=white)
+
+> 🔗 **Live Demo**: [zorvyn-finance-dashboard.vercel.app](https://zorvyn-finance-dashboard.vercel.app) *(update after deploying)*
+
+### Preview
+
+| Light Mode | Dark Mode |
+|---|---|
+| ![Light Mode](./public/preview-light.png) | ![Dark Mode](./public/preview-dark.png) |
 
 ---
 
@@ -215,6 +224,29 @@ This project is ready to deploy on **Vercel**:
 
 ---
 
+## Testing
+
+Unit tests are written with **Vitest** for all pure utility functions:
+
+```bash
+# Run all tests
+npm test
+
+# Run in watch mode
+npm run test:watch
+```
+
+### Test Coverage
+
+| Test File | What's Tested | Test Cases |
+|---|---|---|
+| `calculations.test.js` | All financial utilities (totals, balance, categories, formatting) | 20+ cases |
+| `useFinanceStore.test.js` | Filter logic (type, search, sort, category, date range, combined) | 15+ cases |
+
+Edge cases covered include: empty arrays, zero values, negative balances, whitespace in search, combined filter scenarios, and boundary date ranges.
+
+---
+
 ## Browser Support
 
 Tested on modern browsers (Chrome, Firefox, Safari, Edge). Requires JavaScript enabled.
@@ -222,3 +254,4 @@ Tested on modern browsers (Chrome, Firefox, Safari, Edge). Requires JavaScript e
 ---
 
 Built with care by a frontend engineer who believes dashboards should be both functional and beautiful.
+
