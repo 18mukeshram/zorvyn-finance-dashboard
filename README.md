@@ -8,7 +8,7 @@ A modern, responsive finance dashboard built as a frontend developer assessment.
 ![Zustand](https://img.shields.io/badge/Zustand-5-000?logo=npm)
 ![Tests](https://img.shields.io/badge/Tests-Vitest-6E9F18?logo=vitest&logoColor=white)
 
-> 🔗 **Live Demo**: [zorvyn-finance-dashboard.vercel.app](https://zorvyn-finance-dashboard.vercel.app) 
+> 🔗 **Live Demo**: [zorvyn-finance-dashboard-nine-rho.vercel.app](https://zorvyn-finance-dashboard-nine-rho.vercel.app/)
 
 ### Preview
 
